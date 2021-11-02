@@ -1,0 +1,20 @@
+{
+  "name": "threevue",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "serve": "vite preview"
+  },
+  "dependencies": {
+    "three": "^0.134.0",
+    "vue": "^3.2.16"
+  },
+  "devDependencies": {
+    "@types/three": "^0.133.1",
+    "@vitejs/plugin-vue": "^1.9.3",
+    "typescript": "^4.4.3",
+    "vite": "^2.6.4",
+    "vue-tsc": "^0.3.0"
+  }
+}
