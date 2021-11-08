@@ -1,4 +1,4 @@
-import { AmbientLight, BoxBufferGeometry, Mesh, MeshLambertMaterial, MeshStandardMaterial, PerspectiveCamera, PointLight, Scene, SphereGeometry, Vector3, WebGLRenderer } from "three"
+import { AmbientLight, BoxBufferGeometry, Mesh, MeshLambertMaterial, MeshStandardMaterial, MOUSE, PerspectiveCamera, PointLight, Scene, SphereGeometry, TextureLoader, Vector3, WebGLCubeRenderTarget, WebGLRenderer } from "three"
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls"
 import Stats from "three/examples/jsm/libs/stats.module";
 
@@ -8,7 +8,8 @@ export class TEngine{
     private renderer:WebGLRenderer
     private scene:Scene
     private camera:PerspectiveCamera
-    private controls:OrbitControls
+    private loader:TextureLoader
+    // private controls:OrbitControls
 
     constructor(dom:HTMLElement){
         this.dom = dom
@@ -18,10 +19,32 @@ export class TEngine{
         // 新建透视相机
         this.camera = new PerspectiveCamera(45,dom.offsetWidth/dom.offsetHeight,1,1000);
         this.camera.position.set(20,20,20);
-        this.camera.lookAt(new Vector3(0,1,0));
+        this.camera.lookAt(new Vector3(0,0,0));
+
+        // 3D背景
+        this.loader = new TextureLoader();
+        const texture = this.loader.load(
+        //   'https://threejsfundamentals.org/threejs/resources/images/equirectangularmaps/tears_of_steel_bridge_2k.jpg',
+        // '/loader/hdr/hilly.jpg',
+            'https://i.loli.net/2021/11/09/bdgf4T5D1siRpvK.jpg',
+          () => {
+            const rt = new WebGLCubeRenderTarget(texture.image.height);
+            rt.fromEquirectangularTexture(this.renderer, texture);
+            this.scene.background = rt.texture;
+          });
+
+
 
         //设置轨道控制
-        this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+        // this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+        const orbitControls:OrbitControls = new OrbitControls(this.camera, this.renderer.domElement)
+        //设置鼠标键位
+        orbitControls.mouseButtons = {
+            // LEFT: null as unknown as MOUSE,
+            LEFT:MOUSE.ROTATE,
+            MIDDLE: MOUSE.PAN,
+            RIGHT:MOUSE.ROTATE,
+        }
 
 
         console.log(dom)
