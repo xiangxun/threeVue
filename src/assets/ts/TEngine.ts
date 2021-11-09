@@ -55,7 +55,11 @@ export class TEngine{
           
           
           const dracoLoader=new DRACOLoader()
+<<<<<<< HEAD
           dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.4.3/')
+=======
+          dracoLoader.setDecoderPath('./src/loader/draco/')
+>>>>>>> 236c4fe4ed2183a749a6260d07da6bcbf92b9816
           
           const gltfLoader=new GLTFLoader(loadingManager)
           gltfLoader.setDRACOLoader(dracoLoader)
