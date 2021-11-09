@@ -55,12 +55,12 @@ export class TEngine{
           
           
           const dracoLoader=new DRACOLoader()
-          dracoLoader.setDecoderPath('src/loader/draco/')
+          dracoLoader.setDecoderPath('./src/loader/draco/')
           
           const gltfLoader=new GLTFLoader(loadingManager)
           gltfLoader.setDRACOLoader(dracoLoader)
           gltfLoader.load(
-              'src/loader/dracoModel/dracoRoom.gltf',
+              './src/loader/dracoModel/dracoRoom.gltf',
             //   '../loader/dracoModel/dracoRoom.gltf',
               (gltf)=>{
                   const object =gltf.scene || gltf.scene[0]
