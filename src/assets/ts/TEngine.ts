@@ -1,4 +1,4 @@
-import { AmbientLight, Box3, BoxBufferGeometry, LoadingManager, Mesh, MeshLambertMaterial, MeshStandardMaterial, MOUSE, PerspectiveCamera, PointLight, Scene, SphereGeometry, TextureLoader, Vector3, WebGLCubeRenderTarget, WebGLRenderer } from "three"
+import { ACESFilmicToneMapping, AmbientLight, Box3, BoxBufferGeometry, LoadingManager, Mesh, MeshLambertMaterial, MeshStandardMaterial, MOUSE, PerspectiveCamera, PointLight, Scene, SphereGeometry, sRGBEncoding, TextureLoader, Vector3, WebGLCubeRenderTarget, WebGLRenderer } from "three"
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls"
 import Stats from "three/examples/jsm/libs/stats.module";
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
@@ -15,13 +15,24 @@ export class TEngine{
 
     constructor(dom:HTMLElement){
         this.dom = dom
-        this.renderer = new WebGLRenderer()
+        //渲染 antialias抗锯齿
+        this.renderer = new WebGLRenderer({antialias:true})
+        this.renderer.setPixelRatio( window.devicePixelRatio );
+        this.renderer.setSize( window.innerWidth, window.innerHeight );
+        this.renderer.toneMapping = ACESFilmicToneMapping;
+        this.renderer.toneMappingExposure = 1;
+        // this. renderer.outputEncoding = sRGBEncoding;
+
         // 新建场景
         this.scene = new Scene()
         // 新建透视相机
-        this.camera = new PerspectiveCamera(45,dom.offsetWidth/dom.offsetHeight,0.1,1000);
-        // this.camera.position.set(20,20,20);
-        this.camera.lookAt(new Vector3(0,0,0));
+        // this.camera = new PerspectiveCamera(45,dom.offsetWidth/dom.offsetHeight,0.1,1000);
+
+        this.camera= new PerspectiveCamera(60,window.innerWidth/window.innerHeight)
+        this.camera.position.set(100,100,100);
+        this.camera.lookAt(new Vector3(10,10,10));
+        // this.camera.position.z=500
+        this.scene.add(this.camera)
 
         // 3D背景
         this.loader = new TextureLoader();
@@ -55,19 +66,16 @@ export class TEngine{
           
           
           const dracoLoader=new DRACOLoader()
-<<<<<<< HEAD
+
           dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.4.3/')
-=======
-          dracoLoader.setDecoderPath('./src/loader/draco/')
->>>>>>> 236c4fe4ed2183a749a6260d07da6bcbf92b9816
           
           const gltfLoader=new GLTFLoader(loadingManager)
           gltfLoader.setDRACOLoader(dracoLoader)
           gltfLoader.load(
-              './src/loader/dracoModel/dracoRoom.gltf',
+              'loader/dracoModel/dracoRoom.gltf',
             //   '../loader/dracoModel/dracoRoom.gltf',
               (gltf)=>{
-                  const object =gltf.scene || gltf.scene[0]
+                  const object = gltf.scene || gltf.scene[0]
           
                   //1.调整物体位置
                   const box = new Box3().setFromObject(object)
@@ -77,16 +85,15 @@ export class TEngine{
                   object.position.y += (object.position.y - center.y);
                   object.position.z += (object.position.z - center.z);
                   //2.调整相机位置
-                  this.camera.near = size / 100
-                  this.camera.far = size * 100
-                  this.camera.updateProjectionMatrix()
+                //   this.camera.near = size / 100
+                //   this.camera.far = size * 100
+                //   this.camera.updateProjectionMatrix()
           
-                  this.camera.position.copy(center)
-                  this.camera.position.x += size/2.0
-                  this.camera.position.y += size/2.0
-                  this.camera.position.z += size/2.0
-                  this.camera.lookAt(center)
-          
+                //   this.camera.position.copy(center)
+                //   this.camera.position.x += size/2.0
+                //   this.camera.position.y += size/2.0
+                //   this.camera.position.z += size/2.0
+                //   this.camera.lookAt(center)
                   this.scene.add(object)
                   console.log("scene===",this.scene);
           
@@ -104,6 +111,7 @@ export class TEngine{
         //设置轨道控制
         // this.controls = new OrbitControls(this.camera, this.renderer.domElement);
         const orbitControls:OrbitControls = new OrbitControls(this.camera, this.renderer.domElement)
+        orbitControls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
         //设置鼠标键位
         orbitControls.mouseButtons = {
             // LEFT: null as unknown as MOUSE,
@@ -111,6 +119,16 @@ export class TEngine{
             MIDDLE: MOUSE.PAN,
             RIGHT:MOUSE.ROTATE,
         }
+
+        //resize 加入大小尺寸的控制
+        window.addEventListener('resize',()=>{
+            //更新相机
+            this.camera.aspect=window.innerWidth/window.innerHeight
+            this.camera.updateProjectionMatrix()
+            //更新渲染
+            this.renderer.setSize(window.innerWidth,window.innerHeight)
+            this.renderer.setPixelRatio(Math.min(window.devicePixelRatio,2))
+        })
 
 
         console.log(dom)
@@ -150,6 +168,7 @@ export class TEngine{
             console.log(1)
             this.renderer.render(this.scene, this.camera)
             stats.update();
+            orbitControls.update(); // only required if controls.enableDamping = true, or if controls.autoRotate = true
             requestAnimationFrame(renderFun)
         }
 
