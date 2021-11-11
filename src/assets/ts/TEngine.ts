@@ -21,10 +21,10 @@ export class TEngine{
 
         //object
         //当前选中物体
-        let currentObject = {}
+        var currentObject = {}
 
         //之前选中的物体
-        let lastObject = {}
+        var lastObject = {}
 
         this.dom = dom
         //渲染 antialias抗锯齿
@@ -176,9 +176,9 @@ export class TEngine{
             //    generateTable(currentObject.userData)
         
                 let outlineObjcets = [];
-                outlineObjcets.push(currentObject)
-                outlinePass.selectedObjects = outlineObjcets
-        
+                outlineObjcets.push(currentObject);
+                // outlinePass.selectedObjects = currentObject;
+                outlinePass.selectedObjects = [];
         
             }else{
                 console.log("没有选中")
