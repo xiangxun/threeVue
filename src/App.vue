@@ -1,5 +1,18 @@
 <template>
-  <div class="three-canvas" ref="threeTarget"></div>
+
+    <div id="info">
+      xiangxun
+      <a href="https://github.com/xiangxun/threeVue" target="_blank" rel="noopener">github</a>
+      /
+      <a href="https://space.bilibili.com/314030602" target="_blank" rel="noopener">bilibili</a>
+    </div>
+
+
+  <div class="three-canvas" ref="threeTarget">
+
+
+
+  </div>
 </template>
 
 

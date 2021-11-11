@@ -1,8 +1,12 @@
-import { ACESFilmicToneMapping, AmbientLight, Box3, BoxBufferGeometry, LoadingManager, Mesh, MeshLambertMaterial, MeshStandardMaterial, MOUSE, PerspectiveCamera, PointLight, Scene, SphereGeometry, sRGBEncoding, TextureLoader, Vector3, WebGLCubeRenderTarget, WebGLRenderer } from "three"
+import { ACESFilmicToneMapping, AmbientLight, Box3, BoxBufferGeometry, LoadingManager, Mesh, MeshLambertMaterial, MeshStandardMaterial, MOUSE, PerspectiveCamera, PointLight, Raycaster, Scene, SphereGeometry, sRGBEncoding, TextureLoader, Vector2, Vector3, WebGLCubeRenderTarget, WebGLRenderer } from "three"
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls"
 import Stats from "three/examples/jsm/libs/stats.module";
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass.js';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+
 
 export class TEngine{
 
@@ -14,6 +18,14 @@ export class TEngine{
     // private controls:OrbitControls
 
     constructor(dom:HTMLElement){
+
+        //object
+        //当前选中物体
+        let currentObject = {}
+
+        //之前选中的物体
+        let lastObject = {}
+
         this.dom = dom
         //渲染 antialias抗锯齿
         this.renderer = new WebGLRenderer({antialias:true})
@@ -34,12 +46,32 @@ export class TEngine{
         // this.camera.position.z=500
         this.scene.add(this.camera)
 
+        //使用后处理模块
+        const composer= new EffectComposer(this.renderer)
+        //渲染通道
+        const renderPass=new RenderPass(this.scene,this.camera)
+        composer.addPass(renderPass)
+        //高亮边框通道
+        const outlinePass = new OutlinePass(new Vector2(window.innerWidth, window.innerHeight), this.scene, this.camera);
+        outlinePass.edgeStrength = 10;
+        outlinePass.edgeGlow = 0.1;
+        outlinePass.edgeThickness = 1;
+        //outlinePass.pulsePeriod = 2;
+        outlinePass.visibleEdgeColor.set('#ff0055');
+        outlinePass.hiddenEdgeColor.set('#ffff00');
+        composer.addPass(outlinePass);
+
+
+
+
+
+
         // 3D背景
         this.loader = new TextureLoader();
         const texture = this.loader.load(
         //   'https://threejsfundamentals.org/threejs/resources/images/equirectangularmaps/tears_of_steel_bridge_2k.jpg',
-        // '/loader/hdr/hilly.jpg',
-            'https://i.loli.net/2021/11/09/bdgf4T5D1siRpvK.jpg',
+        '/loader/hdr/hilly.jpg',
+            // 'https://i.loli.net/2021/11/09/bdgf4T5D1siRpvK.jpg',
           () => {
             const rt = new WebGLCubeRenderTarget(texture.image.height);
             rt.fromEquirectangularTexture(this.renderer, texture);
@@ -101,13 +133,6 @@ export class TEngine{
           )
 
 
-
-
-
-
-
-
-
         //设置轨道控制
         // this.controls = new OrbitControls(this.camera, this.renderer.domElement);
         const orbitControls:OrbitControls = new OrbitControls(this.camera, this.renderer.domElement)
@@ -129,6 +154,41 @@ export class TEngine{
             this.renderer.setSize(window.innerWidth,window.innerHeight)
             this.renderer.setPixelRatio(Math.min(window.devicePixelRatio,2))
         })
+
+
+
+
+        //使用射线法
+        const raycaster =new Raycaster()
+        //mouse
+        const mouse= new Vector2()
+
+        window.addEventListener('mousemove',(event)=>{
+            mouse.x = event.clientX / window.innerWidth * 2 - 1
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1
+        })
+        window.addEventListener('click',()=>{
+            if(JSON.stringify(currentObject)!='{}' && currentObject != undefined && currentObject != null&& currentObject != lastObject){
+                console.log("选中了")
+                console.log("click",currentObject)
+                lastObject=currentObject
+                // prDiv.style.visibility='visible'
+            //    generateTable(currentObject.userData)
+        
+                let outlineObjcets = [];
+                outlineObjcets.push(currentObject)
+                outlinePass.selectedObjects = outlineObjcets
+        
+        
+            }else{
+                console.log("没有选中")
+                lastObject={}
+                currentObject={}
+                outlinePass.selectedObjects=[]
+            }
+        })
+
+
 
 
         console.log(dom)
@@ -163,11 +223,31 @@ export class TEngine{
         // this.renderer.setClearColor('rgb(255,255,255)')
         // this.renderer.clearColor();
 
+
         //设置动画
         const renderFun =() =>{
+
+            if (sceneReady) {
+                raycaster.setFromCamera(mouse,this.camera)
+                const intersects = raycaster.intersectObjects(this.scene.children[3].children[0].children)
+                if (intersects.length>0) {
+                    const selectedObject = intersects[0].object
+                    if (currentObject != selectedObject) {
+                        currentObject=selectedObject
+                    }
+                } else {
+                    currentObject={}
+                }
+            }
+
+
+
+
+
             console.log(1)
             this.renderer.render(this.scene, this.camera)
             stats.update();
+            composer.render();
             orbitControls.update(); // only required if controls.enableDamping = true, or if controls.autoRotate = true
             requestAnimationFrame(renderFun)
         }
