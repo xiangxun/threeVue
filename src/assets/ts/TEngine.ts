@@ -175,10 +175,10 @@ export class TEngine{
                 // prDiv.style.visibility='visible'
             //    generateTable(currentObject.userData)
         
-                let outlineObjcets = [];
-                outlineObjcets.push(currentObject);
+                let outlineObjcets : any[] = [];
+                outlineObjcets.push(currentObject)
                 // outlinePass.selectedObjects = currentObject;
-                outlinePass.selectedObjects = [];
+                outlinePass.selectedObjects = outlineObjcets
         
             }else{
                 console.log("没有选中")
