@@ -43,3 +43,85 @@ a, button, input, select {
 	pointer-events: none;
 	z-index: 1; /* TODO Solve this in HTML */
 }
+#icp {
+	position: absolute;
+	bottom: 0px;
+	width: 100%;
+	padding: 10px;
+	box-sizing: border-box;
+	text-align: center;
+	font-size: 12px;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	pointer-events: none;
+	z-index: 2; 
+	/* TODO Solve this in HTML */
+}
+
+
+.pr
+{
+	background-color:#cfa9a950;
+  color: #000000;
+  position: fixed;
+  top: auto;
+  left: auto;
+  padding: 0px;
+  line-height: 0.8;
+  border-radius: 0px;
+  overflow: auto;
+  resize: both;
+  /* overflow: scroll; */
+}
+
+.styled-table {
+  /* width: 100%; */
+  padding: 10px;
+  margin: 10px;
+  border-collapse: collapse;
+  font-size: 0.6em;
+  font-family: sans-serif;
+  /* min-width: 800px; */
+  box-shadow: 0 0 20px #00000088;
+  display: table;
+  white-space: nowrap;
+  flex-wrap: wrap;
+
+}
+
+.styled-table thead tr {
+  background-color: #000000;
+  color: #ffffff;
+  text-align: left;
+  
+}
+
+
+.styled-table thead td {
+  padding: 10px;
+}
+
+
+.styled-table th,
+.styled-table td {
+    padding: 5px 5px;
+}
+.styled-table tbody{
+ 
+  height:200px;
+  overflow: scroll;
+}
+.styled-table tbody tr {
+  border-bottom: 1px solid #110000;
+}
+
+.styled-table tbody tr:nth-of-type(even) {
+  background-color: #000000aa;
+  color: #ffffff;
+}
+
+.styled-table tbody tr:last-of-type {
+  border-bottom: 5px solid #ff0000;
+}
