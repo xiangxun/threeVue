@@ -1,4 +1,4 @@
-import { ACESFilmicToneMapping, AmbientLight, Box3, BoxBufferGeometry, LoadingManager, Mesh, MeshLambertMaterial, MeshStandardMaterial, MOUSE, PerspectiveCamera, PointLight, Raycaster, Scene, SphereGeometry, sRGBEncoding, TextureLoader, Vector2, Vector3, WebGLCubeRenderTarget, WebGLRenderer } from "three"
+import { ACESFilmicToneMapping, AmbientLight, Box3, BoxBufferGeometry, LoadingManager, Mesh, MeshLambertMaterial, MeshStandardMaterial, MOUSE, Object3D, PerspectiveCamera, PointLight, Raycaster, Scene, SphereGeometry, sRGBEncoding, TextureLoader, Vector2, Vector3, WebGLCubeRenderTarget, WebGLRenderer } from "three"
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls"
 import Stats from "three/examples/jsm/libs/stats.module";
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
@@ -195,13 +195,13 @@ export class TEngine{
         dom.appendChild(this.renderer.domElement)
         this.renderer.setSize(dom.offsetWidth,dom.offsetHeight,true)
 
-        //添加环境光
-        const ambientLight : AmbientLight = new AmbientLight(0x00ffff);
-        this.scene.add(ambientLight);
-        // 添加点光源
-        const pointlight:PointLight = new PointLight( 0xffffff, 5, 100 );
-        pointlight.position.set( 50, 50, 50 );
-        this.scene.add( pointlight );
+        // //添加环境光
+        // const ambientLight : AmbientLight = new AmbientLight(0x00ffff);
+        // this.scene.add(ambientLight);
+        // // 添加点光源
+        // const pointlight:PointLight = new PointLight( 0xffffff, 5, 100 );
+        // pointlight.position.set( 50, 50, 50 );
+        // this.scene.add( pointlight );
 
         // 设置几何体
         // const box:Mesh = new Mesh(
@@ -258,4 +258,8 @@ export class TEngine{
         // this.controls.update();
         
     }
+    
+    addObject(...object:Object3D[]){
+        object.forEach(elem=>{this.scene.add(elem)})
+    };
 }

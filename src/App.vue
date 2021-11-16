@@ -1,8 +1,9 @@
 <template>
 
     <div id="info">
-      
-      <a href="https://xiangxun.github.io/" target="_blank" rel="noopener">xiangxun</a>
+      <a href="bim.red" target="_blank" rel="noopener">bim.red</a>
+      |
+      <a href="https://xiangxun.github.io/" target="_blank" rel="noopener">blog</a>
       |
       <a href="https://github.com/xiangxun/threeVue" target="_blank" rel="noopener">github</a>
       <!-- /
@@ -22,6 +23,7 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue';
 import { TEngine } from "./assets/ts/TEngine";
+import { LightsList } from "./assets/ts/Tlight"
 
 export default defineComponent({
   setup() {
@@ -31,6 +33,7 @@ export default defineComponent({
 
     onMounted(()=>{
       const TE = new TEngine(threeTarget.value!)
+      TE.addObject(...LightsList)
     })
 
     return{
